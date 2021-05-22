@@ -26,32 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Home"),
-            Text(
-              address,
-              style: t.textTheme.bodyText2,
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.favorite_border),
-            onPressed: () => print("Favourite"),
-          ),
-          IconButton(
-            icon: Icon(Icons.shopping_cart_outlined),
-            onPressed: () => print("Shop"),
-          ),
-        ],
-      ),
+      appBar: buildAppBar(t),
       drawer: SafeArea(
         child: Drawer(
           child: Column(
-            children: [Text("What")],
+            children: [DrawerHeader(child: Text("What"),)],
           ),
         ),
       ),
@@ -59,50 +38,31 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           margin: EdgeInsets.symmetric(horizontal: 16),
           child: ListView(
+            shrinkWrap: true,
             children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 35, 0, 45),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Hi, $name",
-                      style: t.textTheme.headline6,
-                    ),
-                    SizedBox(
-                      height: 7,
-                    ),
-                    Text(
-                      "There are $shops shops in your area\nDelivery in under $delivery_time minutes!",
-                      style: t.textTheme.subtitle1,
-                    )
-                  ],
+              buildHomeIntro(t),
+              buildSearchBox(t),
+              SizedBox(height: 20),
+              buildFoodDeliveryCard(t),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: buildPandaMartCard(t)),
+                  SizedBox(width: 20),
+                  Expanded(
+                      child: Column(
+                    children: [buildShopsCard(t), buildPickUpCard(t)],
+                  ))
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  "Your daily deals",
+                  style: Theme.of(context).textTheme.headline5,
                 ),
               ),
-              buildSearchBox(context),
-              SizedBox(
-                height: 20,
-              ),
-              buildFoodDeliveryCard(context),
-              Row(
-                children: [
-                  Expanded(child: buildPandaMartCard(context)),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  // Expanded(
-                  //   child: Column(
-                  //     children: [
-                  //       Expanded(child: buildFoodDeliveryCard(context)),
-                  //       SizedBox(
-                  //         height: 20,
-                  //       ),
-                  //       Expanded(child: buildPandaMartCard(context)),
-                  //     ],
-                  //   ),
-                  // )
-                ],
-              )
+              buildCampainList()
             ],
           ),
         ),
@@ -110,10 +70,78 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildFoodDeliveryCard(BuildContext context) {
+  AppBar buildAppBar(ThemeData t) {
+    return AppBar(
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Home"),
+          Text(
+            address,
+            style: t.textTheme.bodyText2,
+          ),
+        ],
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.favorite_border),
+          onPressed: () => print("Favourite"),
+        ),
+        IconButton(
+          icon: Icon(Icons.shopping_cart_outlined),
+          onPressed: () => print("Shop"),
+        ),
+      ],
+    );
+  }
+
+  Container buildHomeIntro(ThemeData t) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 35, 0, 45),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Hi, $name",
+            style: t.textTheme.headline6,
+          ),
+          SizedBox(
+            height: 7,
+          ),
+          Text(
+            "There are $shops shops in your area\nDelivery in under $delivery_time minutes!",
+            style: t.textTheme.subtitle1,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildCampainList() {
+    return Container(
+      height: 180,
+      margin: EdgeInsets.only(bottom: 10),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          CampaignCard(
+            imagePath: 'assets/images/deal1.jpg',
+          ),
+          CampaignCard(
+            imagePath: 'assets/images/deal2.jpg',
+          ),
+          CampaignCard(
+            imagePath: 'assets/images/deal3.png',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildFoodDeliveryCard(ThemeData t) {
     return PandaHomeCard(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      textColor: Theme.of(context).colorScheme.onPrimary,
+      backgroundColor: t.colorScheme.primary,
+      textColor: t.colorScheme.onPrimary,
       heading: "Food delivery",
       description: "Best deals on your favourites!",
       imagePath: "assets/images/food_delivery_banner.png",
@@ -121,18 +149,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildPandaMartCard(BuildContext context) {
+  Widget buildPandaMartCard(ThemeData t) {
     return PandaHomeCard(
-      backgroundColor: Theme.of(context).colorScheme.secondary,
-      textColor: Theme.of(context).colorScheme.onSecondary,
+      backgroundColor: t.colorScheme.secondary,
+      textColor: t.colorScheme.onSecondary,
       heading: "pandamart",
       description: "Get groceries in 30\nmins",
-      imagePath: "assets/images/food_delivery_banner.png",
+      imagePath: "assets/images/pandabag.png",
+      alignment: Alignment.center,
+      topMargin: 120,
       hasPills: true,
     );
   }
 
-  Widget buildSearchBox(BuildContext context) {
+  Widget buildShopsCard(ThemeData t) {
+    return PandaHomeCard(
+      backgroundColor: Color(0xFF84C0FF),
+      textColor: Theme.of(context).colorScheme.onSecondary,
+      heading: "Shops",
+      description: "Grocery, electronics &\nmore",
+      imagePath: "assets/images/shopping_bag.png",
+      alignment: Alignment.centerRight,
+      topMargin: 70,
+      pictureSize: 110,
+      pictureMargin: EdgeInsets.zero,
+    );
+  }
+
+  Widget buildPickUpCard(ThemeData t) {
+    return PandaHomeCard(
+      backgroundColor: Color(0xFFEE9EC1),
+      textColor: t.colorScheme.onSecondary,
+      heading: "Pick-Up",
+      description: "Get up to 60% off",
+      imagePath: "assets/images/pandabag.png",
+      alignment: Alignment.topRight,
+      topMargin: 0,
+      pictureSize: 50,
+    );
+  }
+
+  Widget buildSearchBox(ThemeData t) {
     return InkWell(
       onTap: () => Get.to(() => SearchScreen()),
       child: Container(
@@ -159,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(12),
               child: Icon(
                 Icons.search,
-                color: Theme.of(context).colorScheme.primary,
+                color: t.colorScheme.primary,
                 size: 35,
               ),
             ),
@@ -168,6 +225,35 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(color: Colors.grey[600], fontSize: 15.5),
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class CampaignCard extends StatelessWidget {
+  final String imagePath;
+  const CampaignCard({
+    this.imagePath,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        print("Going to the campaign");
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 10),
+        height: 180,
+        width: 150,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.fill,
+          ),
         ),
       ),
     );
@@ -183,15 +269,21 @@ class PandaHomeCard extends StatelessWidget {
   final String imagePath;
   final Alignment alignment;
   final hasPills;
+  final double topMargin;
+  final double pictureSize;
+  final EdgeInsetsGeometry pictureMargin;
   const PandaHomeCard({
     Key key,
     @required this.backgroundColor,
     this.textColor = Colors.black,
     @required this.heading,
     @required this.description,
+    this.topMargin = 27,
     this.onPressed,
     @required this.imagePath,
+    this.pictureSize = 130,
     this.alignment = Alignment.topRight,
+    this.pictureMargin = const EdgeInsets.all(15),
     this.hasPills = false,
   }) : super(key: key);
 
@@ -202,6 +294,7 @@ class PandaHomeCard extends StatelessWidget {
         Container(
           // height: 100,
           width: double.infinity,
+          margin: EdgeInsets.only(bottom: 20),
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: backgroundColor,
@@ -211,7 +304,7 @@ class PandaHomeCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 27,
+                height: topMargin,
               ),
               Text(
                 heading,
@@ -243,10 +336,10 @@ class PandaHomeCard extends StatelessWidget {
         Align(
           alignment: alignment,
           child: Container(
-            height: 130,
-            width: 130,
-            margin: EdgeInsets.all(15),
-            child: Image.asset('assets/images/food_delivery_banner.png'),
+            height: pictureSize,
+            width: pictureSize,
+            margin: pictureMargin,
+            child: Image.asset(imagePath),
           ),
         )
       ],

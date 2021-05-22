@@ -45,6 +45,7 @@ class CLThemeData {
         elevation: 2,
       ),
       textTheme: TextTheme(
+        headline5: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         headline6: TextStyle(
           color: c.onBackground,
           fontWeight: FontWeight.bold,
