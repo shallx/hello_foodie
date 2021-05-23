@@ -17,6 +17,8 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: CLThemeData().light(),
+        // darkTheme: CLThemeData().dark(),
+        darkTheme: ThemeData.dark(),
         home: HomeScreen(),
       ),
     );

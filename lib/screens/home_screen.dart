@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:foodpanda/screens/restaurant_delivery_screen.dart';
 import 'package:foodpanda/screens/search_screen.dart';
 import 'package:foodpanda/shared/ui_library.dart';
+import 'package:foodpanda/widgets/basic_widgets.dart';
+import 'package:foodpanda/widgets/drawer.dart';
 import 'package:get/route_manager.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,19 +23,15 @@ class _HomeScreenState extends State<HomeScreen> {
   String address = "Waves-87/3 Electric Supply Rd";
   String name = 'Rafat';
   int shops = 56;
-  int delivery_time = 30;
+  int deliveryTime = 30;
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     return Scaffold(
-      appBar: buildAppBar(t),
+      appBar: buildAppBar(t, "Home", address),
       drawer: SafeArea(
-        child: Drawer(
-          child: Column(
-            children: [DrawerHeader(child: Text("What"),)],
-          ),
-        ),
+        child: MyDrawer(),
       ),
       body: Stack(children: [
         Container(
@@ -70,31 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  AppBar buildAppBar(ThemeData t) {
-    return AppBar(
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Home"),
-          Text(
-            address,
-            style: t.textTheme.bodyText2,
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.favorite_border),
-          onPressed: () => print("Favourite"),
-        ),
-        IconButton(
-          icon: Icon(Icons.shopping_cart_outlined),
-          onPressed: () => print("Shop"),
-        ),
-      ],
-    );
-  }
-
   Container buildHomeIntro(ThemeData t) {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 35, 0, 45),
@@ -109,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 7,
           ),
           Text(
-            "There are $shops shops in your area\nDelivery in under $delivery_time minutes!",
+            "There are $shops shops in your area\nDelivery in under $deliveryTime minutes!",
             style: t.textTheme.subtitle1,
           )
         ],
@@ -146,6 +120,9 @@ class _HomeScreenState extends State<HomeScreen> {
       description: "Best deals on your favourites!",
       imagePath: "assets/images/food_delivery_banner.png",
       hasPills: true,
+      onPressed: () {
+        Get.to(() => RestaurantDeliveryScreen());
+      },
     );
   }
 
@@ -188,77 +165,9 @@ class _HomeScreenState extends State<HomeScreen> {
       pictureSize: 50,
     );
   }
-
-  Widget buildSearchBox(ThemeData t) {
-    return InkWell(
-      onTap: () => Get.to(() => SearchScreen()),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey[400],
-              offset: Offset(0, 0.2),
-              blurRadius: 0.3,
-            ),
-            BoxShadow(
-              color: Colors.white,
-              offset: Offset(0, -0.2),
-              blurRadius: 0.3,
-            ),
-          ],
-        ),
-        alignment: Alignment.topLeft,
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Icon(
-                Icons.search,
-                color: t.colorScheme.primary,
-                size: 35,
-              ),
-            ),
-            Text(
-              "Search for shops & restaurants",
-              style: TextStyle(color: Colors.grey[600], fontSize: 15.5),
-            )
-          ],
-        ),
-      ),
-    );
-  }
 }
 
-class CampaignCard extends StatelessWidget {
-  final String imagePath;
-  const CampaignCard({
-    this.imagePath,
-    Key key,
-  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        print("Going to the campaign");
-      },
-      child: Container(
-        margin: EdgeInsets.only(right: 10),
-        height: 180,
-        width: 150,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          image: DecorationImage(
-            image: AssetImage(imagePath),
-            fit: BoxFit.fill,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class PandaHomeCard extends StatelessWidget {
   final Color backgroundColor;
@@ -291,46 +200,49 @@ class PandaHomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          // height: 100,
-          width: double.infinity,
-          margin: EdgeInsets.only(bottom: 20),
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: topMargin,
-              ),
-              Text(
-                heading,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
+        InkWell(
+          onTap: onPressed,
+          child: Container(
+            // height: 100,
+            width: double.infinity,
+            margin: EdgeInsets.only(bottom: 20),
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: topMargin,
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                description,
-                style: TextStyle(
-                  color: textColor,
+                Text(
+                  heading,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              hasPills
-                  ? Pills(
-                      text: "Order now",
-                      onPressed: () {},
-                      margin: EdgeInsets.only(top: 10),
-                    )
-                  : SizedBox()
-            ],
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  description,
+                  style: TextStyle(
+                    color: textColor,
+                  ),
+                ),
+                hasPills
+                    ? Pills(
+                        text: "Order now",
+                        onPressed: onPressed,
+                        margin: EdgeInsets.only(top: 10),
+                      )
+                    : SizedBox()
+              ],
+            ),
           ),
         ),
         Align(
